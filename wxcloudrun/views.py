@@ -107,12 +107,13 @@ def process_wechat_message():
     print("Content:", content)
     logger.info("FromUserName: %s, Content: %s", form_user_name, content)
 
-    data = json.dumps({'ToUserName': form_user_name, 
-                       'FromUserName': to_user_name,
-                       "CreateTime": create_time,
-                        "MsgType": "text",
-                        "Content": "这就是我的回复消息，你觉得怎么样"
-                    })
+    data = json.dumps({
+       'ToUserName': form_user_name,
+       'FromUserName': to_user_name,
+       "CreateTime": create_time,
+       "MsgType": "text",
+       "Content": content
+   })
     return Response(data, mimetype='application/json; charset=utf-8')
 
 
