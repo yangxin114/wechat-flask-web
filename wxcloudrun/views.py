@@ -69,3 +69,7 @@ def get_count():
 @app.route('/api/test', methods=['GET'])
 def test():
     return make_succ_response('测试接口')
+
+@app.route('/api/process_wechat_message', methods=['POST'])
+def process_wechat_message():
+    return make_succ_response('测试接口')
