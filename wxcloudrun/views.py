@@ -7,9 +7,17 @@ from wxcloudrun.response import make_succ_empty_response, make_succ_response, ma
 import json
 from flask import Response
 import logging
+import sys
 
 # 初始化日志
 logger = logging.getLogger('log')
+logger.setLevel(logging.DEBUG)  # 设置日志级别，可以根据需要调整
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+stdout_handler = logging.StreamHandler(stream=sys.stdout)  # 使用sys.stdout确保输出到标准输出
+stdout_handler.setLevel(logging.DEBUG)  # 设置处理器的日志级别
+stdout_handler.setFormatter(formatter)  # 设置日志格式
+
+
 @app.route('/')
 def index():
     """
@@ -95,4 +103,30 @@ def process_wechat_message():
     
     print("ToUserName:", to_user_name)
     print("Content:", content)
+    logger.info("ToUserName: %s, Content: %s", to_user_name, content)
     return make_succ_response("ToUserName:{},Content:{} ".format(to_user_name,content))
+
+
+
+
+def send_wechat_message(to_user_name, content):
+    """
+    发送微信消息的函数。
+    
+    参数:
+        to_user_name (str): 接收消息的用户的微信号。
+        content (str): 要发送的消息内容。
+    
+    返回:
+        make_succ_response('success') 的返回值，通常是一个表示处理成功的响应。
+    """
+    # 构造微信消息的XML格式
+    xml = """
+    <xml>
+        <ToUserName><![CDATA[{}]]></ToUserName>
+        <FromUserName><![CDATA[{}]]></FromUserName>
+        <CreateTime>{}</CreateTime>
+        <MsgType><![CDATA[text]]></MsgType>
+        <Content><![CDATA[{}]]></Content>
+    </xml>
+    """.format(to_user_name, to_user_name, int(datetime.now().timestamp()), content) 
