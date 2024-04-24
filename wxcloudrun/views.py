@@ -8,6 +8,7 @@ import json
 from flask import Response
 import logging
 import sys
+import requests
 
 # 初始化日志
 logger=logging.getLogger('log')
@@ -105,29 +106,36 @@ def process_wechat_message():
     print("ToUserName:", to_user_name)
     print("Content:", content)
     logger.info("ToUserName: %s, Content: %s", to_user_name, content)
+    send_wechat_message(to_user_name,content)
     return make_succ_response("ToUserName:{},Content:{} ".format(to_user_name,content))
 
 
 
 
 def send_wechat_message(to_user_name, content):
-    """
-    发送微信消息的函数。
-    
-    参数:
-        to_user_name (str): 接收消息的用户的微信号。
-        content (str): 要发送的消息内容。
-    
-    返回:
-        make_succ_response('success') 的返回值，通常是一个表示处理成功的响应。
-    """
-    # 构造微信消息的XML格式
-    xml = """
-    <xml>
-        <ToUserName><![CDATA[{}]]></ToUserName>
-        <FromUserName><![CDATA[{}]]></FromUserName>
-        <CreateTime>{}</CreateTime>
-        <MsgType><![CDATA[text]]></MsgType>
-        <Content><![CDATA[{}]]></Content>
-    </xml>
-    """.format(to_user_name, to_user_name, int(datetime.now().timestamp()), content) 
+    url = "http://api.weixin.qq.com/cgi-bin/message/custom/send"
+
+    # 请求体数据
+    payload = {
+        "touser": to_user_name,  # 用户的openid
+        "msgtype": "text",
+        "text": {
+            "content": content
+        }
+    }
+
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    response = requests.post(url, data=json.dumps(payload), headers=headers)
+
+    try:
+        response.raise_for_status()  # 如果响应状态码不是2xx，引发HTTPError异常
+    except requests.HTTPError as e:
+        print(f"接口返回错误：{e}")
+        return None
+
+    print('接口返回内容:', response.text)
+
+    return json.loads(response.text)
