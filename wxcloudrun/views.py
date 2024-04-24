@@ -4,7 +4,8 @@ from run import app
 from wxcloudrun.dao import delete_counterbyid, query_counterbyid, insert_counter, update_counterbyid
 from wxcloudrun.model import Counters
 from wxcloudrun.response import make_succ_empty_response, make_succ_response, make_err_response
-
+import json
+from flask import Response
 
 @app.route('/')
 def index():
@@ -72,4 +73,6 @@ def test():
 
 @app.route('/api/process_wechat_message', methods=['POST'])
 def process_wechat_message():
-    return make_succ_response('测试接口')
+    message  = "success"
+    data = json.dumps({'code': 0, 'data': message})
+    return Response(data, mimetype='application/json')
