@@ -113,8 +113,7 @@ def process_wechat_message():
                         "MsgType": "text",
                         "Content": "这就是我的回复消息，你觉得怎么样"
                     })
-    return Response(data, mimetype='application/json')
-
+    return Response(data, mimetype='application/json; charset=utf-8')
 
 
 def send_wechat_message(form_user_name, content):
