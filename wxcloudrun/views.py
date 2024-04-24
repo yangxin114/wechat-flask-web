@@ -9,7 +9,7 @@ from flask import Response
 import logging
 import sys
 import requests
-
+from flask import make_response
 # 初始化日志
 logger=logging.getLogger('log')
 logger.setLevel(logging.DEBUG)  # 设置日志级别，可以根据需要调整
@@ -106,8 +106,21 @@ def process_wechat_message():
     print("FromUserName:", form_user_name)
     print("Content:", content)
     logger.info("FromUserName: %s, Content: %s", form_user_name, content)
-    send_wechat_message(form_user_name,content)
-    return make_succ_response("ToUserName:{},Content:{} ".format(to_user_name,content))
+
+    xml_reply = f"""
+    <xml>
+      <ToUserName><![CDATA[{form_user_name}]]></ToUserName>
+      <FromUserName><![CDATA[{to_user_name}]]></FromUserName>
+      <CreateTime>{create_time}</CreateTime>
+      <MsgType><![CDATA[text]]></MsgType>
+      <Content><![CDATA[{content}]]></Content>
+    </xml>
+    """
+
+    response = make_response(xml_reply)
+    response.headers['Content-Type'] = 'application/xml'
+    return response
+    # return make_succ_response("ToUserName:{},Content:{} ".format(to_user_name,content))
 
 
 
