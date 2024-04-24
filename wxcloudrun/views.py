@@ -64,3 +64,8 @@ def get_count():
     """
     counter = Counters.query.filter(Counters.id == 1).first()
     return make_succ_response(0) if counter is None else make_succ_response(counter.count)
+
+#测试接口
+@app.route('/api/test', methods=['GET'])
+def test():
+    return make_succ_response('测试接口')
