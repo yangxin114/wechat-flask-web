@@ -73,6 +73,4 @@ def test():
 
 @app.route('/api/process_wechat_message', methods=['POST'])
 def process_wechat_message():
-    message  = "success"
-    data = json.dumps({'code': 0, 'data': message})
-    return Response(data, mimetype='application/json')
+    return make_succ_response('success')
