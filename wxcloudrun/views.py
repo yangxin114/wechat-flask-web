@@ -113,8 +113,9 @@ def process_wechat_message():
        "CreateTime": create_time,
        "MsgType": "text",
        "Content": content
-   })
-    return Response(data, mimetype='application/json; charset=utf-8')
+   },ensure_ascii=False)
+    new_data= bytes(data, encoding='utf-8')
+    return Response(new_data, mimetype='application/json; charset=utf-8')
 
 
 def send_wechat_message(form_user_name, content):
