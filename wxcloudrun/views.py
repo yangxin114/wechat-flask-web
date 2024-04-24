@@ -9,13 +9,13 @@ from flask import Response
 import logging
 import sys
 import requests
-from flask import make_response
+
 # 初始化日志
 logger=logging.getLogger('log')
 logger.setLevel(logging.DEBUG)  # 设置日志级别，可以根据需要调整
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 # stdout_handler = logging.StreamHandler(stream=sys.stdout)  # 使用sys.stdout确保输出到标准输出
-stdout_handler = logging.FileHandler("stdout")  # 使用指定的文件路径
+stdout_handler = logging.FileHandler("/var/log/log.txt")  # 使用指定的文件路径
 
 stdout_handler.setFormatter(formatter)  # 设置日志格式
 
@@ -107,28 +107,30 @@ def process_wechat_message():
     print("Content:", content)
     logger.info("FromUserName: %s, Content: %s", form_user_name, content)
 
-    xml_reply = f"""
-    <xml>
-      <ToUserName><![CDATA[{form_user_name}]]></ToUserName>
-      <FromUserName><![CDATA[{to_user_name}]]></FromUserName>
-      <CreateTime>{create_time}</CreateTime>
-      <MsgType><![CDATA[text]]></MsgType>
-      <Content><![CDATA[{content}]]></Content>
-    </xml>
-    """
-
-    response = make_response(xml_reply)
-    response.headers['Content-Type'] = 'application/xml'
-    return response
-    # return make_succ_response("ToUserName:{},Content:{} ".format(to_user_name,content))
-
+    data = json.dumps({'ToUserName': form_user_name, 
+                       'FromUserName': to_user_name,
+                       "CreateTime": create_time,
+                        "MsgType": "text",
+                        "Content": "这就是我的回复消息，你觉得怎么样"
+                    })
+    return Response(data, mimetype='application/json')
 
 
 
 def send_wechat_message(form_user_name, content):
+    """
+    发送微信消息给指定用户。
+
+    参数:
+    - form_user_name: 用户的openid，是微信用户的身份标识。
+    - content: 要发送的消息内容。
+
+    返回值:
+    - 如果请求成功，返回接口返回的JSON对象；如果请求失败，返回None。
+    """
     url = "http://api.weixin.qq.com/cgi-bin/message/custom/send"
 
-    # 请求体数据
+    # 构建请求体数据
     payload = {
         "touser": form_user_name,  # 用户的openid
         "msgtype": "text",
@@ -141,10 +143,11 @@ def send_wechat_message(form_user_name, content):
         'Content-Type': 'application/json'
     }
 
+    # 发送POST请求
     response = requests.post(url, data=json.dumps(payload), headers=headers)
 
     try:
-        response.raise_for_status()  # 如果响应状态码不是2xx，引发HTTPError异常
+        response.raise_for_status()  # 检查响应状态码，如果不是2xx则抛出异常
     except requests.HTTPError as e:
         print(f"接口返回错误：{e}")
         return None
