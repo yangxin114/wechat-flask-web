@@ -73,4 +73,27 @@ def test():
 
 @app.route('/api/process_wechat_message', methods=['POST'])
 def process_wechat_message():
+    """
+    处理微信消息的函数。
+    
+    该函数无参数。
+    
+    返回:
+        make_succ_response('success') 的返回值，通常是一个表示处理成功的响应。
+    """
+    ##接收微信消息
+    params = request.get_json()
+    to_user_name = params['ToUserName']
+    form_user_name = params['FromUserName']
+    create_time = params['CreateTime']
+    msg_type = params['MsgType']
+    content = params['Content']
+    msgid = params['MsgId']
+    
+    print("ToUserName:", to_user_name)
+    print("FromUserName:", form_user_name)
+    print("CreateTime:", create_time)
+    print("MsgType:", msg_type)
+    print("Content:", content)
+    print("MsgId:", msgid)
     return make_succ_response('success')
