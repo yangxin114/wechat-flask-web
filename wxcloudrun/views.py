@@ -10,11 +10,12 @@ import logging
 import sys
 
 # 初始化日志
-logger = logging.getLogger('log')
+logger=logging.getLogger('log')
 logger.setLevel(logging.DEBUG)  # 设置日志级别，可以根据需要调整
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-stdout_handler = logging.StreamHandler(stream=sys.stdout)  # 使用sys.stdout确保输出到标准输出
-stdout_handler.setLevel(logging.DEBUG)  # 设置处理器的日志级别
+# stdout_handler = logging.StreamHandler(stream=sys.stdout)  # 使用sys.stdout确保输出到标准输出
+stdout_handler = logging.FileHandler("stdout")  # 使用指定的文件路径
+
 stdout_handler.setFormatter(formatter)  # 设置日志格式
 
 
