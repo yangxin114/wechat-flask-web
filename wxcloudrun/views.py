@@ -6,7 +6,10 @@ from wxcloudrun.model import Counters
 from wxcloudrun.response import make_succ_empty_response, make_succ_response, make_err_response
 import json
 from flask import Response
+import logging
 
+# 初始化日志
+logger = logging.getLogger('log')
 @app.route('/')
 def index():
     """
@@ -90,10 +93,6 @@ def process_wechat_message():
     content = params['Content']
     msgid = params['MsgId']
     
-    print("ToUserName:", to_user_name)
-    print("FromUserName:", form_user_name)
-    print("CreateTime:", create_time)
-    print("MsgType:", msg_type)
-    print("Content:", content)
-    print("MsgId:", msgid)
+    logger.info("FromUserName= {} ".format(form_user_name))
+    logger.info("Content= {} ".format(content))
     return make_succ_response('success')
