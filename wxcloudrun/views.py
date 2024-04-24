@@ -93,6 +93,6 @@ def process_wechat_message():
     content = params['Content']
     msgid = params['MsgId']
     
-    logger.info("FromUserName= {} ".format(form_user_name))
-    logger.info("Content= {} ".format(content))
-    return make_succ_response('success')
+    print("ToUserName:", to_user_name)
+    print("Content:", content)
+    return make_succ_response("ToUserName:{},Content:{} ".format(to_user_name,content))
