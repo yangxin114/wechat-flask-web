@@ -103,21 +103,21 @@ def process_wechat_message():
     content = params['Content']
     msgid = params['MsgId']
     
-    print("ToUserName:", to_user_name)
+    print("FromUserName:", form_user_name)
     print("Content:", content)
-    logger.info("ToUserName: %s, Content: %s", to_user_name, content)
-    send_wechat_message(to_user_name,content)
+    logger.info("FromUserName: %s, Content: %s", form_user_name, content)
+    send_wechat_message(form_user_name,content)
     return make_succ_response("ToUserName:{},Content:{} ".format(to_user_name,content))
 
 
 
 
-def send_wechat_message(to_user_name, content):
+def send_wechat_message(form_user_name, content):
     url = "http://api.weixin.qq.com/cgi-bin/message/custom/send"
 
     # 请求体数据
     payload = {
-        "touser": to_user_name,  # 用户的openid
+        "touser": form_user_name,  # 用户的openid
         "msgtype": "text",
         "text": {
             "content": content
