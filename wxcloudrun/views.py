@@ -9,6 +9,7 @@ from flask import Response
 import logging
 import sys
 import requests
+from qwen import call_with_messages
 
 # 初始化日志
 logger=logging.getLogger('log')
@@ -107,12 +108,18 @@ def process_wechat_message():
     print("Content:", content)
     logger.info("FromUserName: %s, Content: %s", form_user_name, content)
 
+    res = call_with_messages(content)
+    res_content="暂时无法回答您的问题，服务器没有响应。"
+    if(res != None):
+        res_content = res.output.choices[0].message.content
+    
+    current_time = datetime.now()
     data = json.dumps({
        'ToUserName': form_user_name,
        'FromUserName': to_user_name,
-       "CreateTime": create_time,
+       "CreateTime": current_time,
        "MsgType": "text",
-       "Content": content
+       "Content": res_content
    },ensure_ascii=False)
     new_data= bytes(data, encoding='utf-8')
     return Response(new_data, mimetype='application/json; charset=utf-8')
