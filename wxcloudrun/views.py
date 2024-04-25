@@ -110,19 +110,20 @@ def process_wechat_message():
 
     
     res = call_with_messages(content)
-    res_content="暂时无法回答您的问题，服务器没有响应。"
-    if(res != None):
+    res_content = "暂时无法回答您的问题，服务器没有响应。"
+    if(res is not None):
         res_content = res.output.choices[0].message.content
     
-    current_time = datetime.now()
     data = json.dumps({
        'ToUserName': form_user_name,
        'FromUserName': to_user_name,
-       "CreateTime": current_time,
+       "CreateTime": create_time,
        "MsgType": "text",
        "Content": res_content
    },ensure_ascii=False)
+    
     new_data= bytes(data, encoding='utf-8')
+    
     return Response(new_data, mimetype='application/json; charset=utf-8')
 
 
