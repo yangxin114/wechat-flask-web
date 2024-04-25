@@ -2,10 +2,13 @@ import random
 from http import HTTPStatus
 from dashscope import Generation  # 建议dashscope SDK 的版本 >= 1.14.0
 import os
+import dashscope
 
-os.environ['DASHSCOPE_API_KEY'] = 'sk-802a9fe7c465438697be02063ccc1b01'
 
 def call_with_messages(question):
+    # os.environ['DASHSCOPE_API_KEY'] = 'sk-802a9fe7c465438697be02063ccc1b01'
+
+    dashscope.api_key = 'sk-802a9fe7c465438697be02063ccc1b01'
     """
     使用给定的消息列表调用Generation.call函数，并根据响应状态打印结果或错误信息。
     
@@ -31,3 +34,8 @@ def call_with_messages(question):
             response.code, response.message
         ))
         return None
+
+
+# if __name__ == '__main__':
+#     res  =call_with_messages("介绍香港移民政策")
+#     print(res.output.choices[0].message.content)
