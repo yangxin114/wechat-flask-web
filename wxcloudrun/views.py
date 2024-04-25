@@ -9,7 +9,7 @@ from flask import Response
 import logging
 import sys
 import requests
-from qwen import call_with_messages
+from wxcloudrun.qwen import call_with_messages
 
 # 初始化日志
 logger=logging.getLogger('log')
@@ -108,6 +108,7 @@ def process_wechat_message():
     print("Content:", content)
     logger.info("FromUserName: %s, Content: %s", form_user_name, content)
 
+    
     res = call_with_messages(content)
     res_content="暂时无法回答您的问题，服务器没有响应。"
     if(res != None):
